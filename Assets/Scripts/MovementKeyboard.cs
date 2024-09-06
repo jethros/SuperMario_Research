@@ -43,38 +43,43 @@ public class MovementKeyboard : MonoBehaviour
     [SerializeField] private Shoot spell;
     [SerializeField] private Transform firePoint;
 
+    //Audio setup
+    [SerializeField] private AudioSource audioData;
+
     void Start()
     {
-        //Fetch the SpriteRenderer from the GameObject
+        //Fetch the SpriteRenderer from the GameObject.
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
 
+        //Get the rigidbody of the gameobject.
         rigidBody = GetComponent<Rigidbody2D>();
+
+        //Setup the audio so sounds can be played.
+        audioData = GetComponent<AudioSource>();
+
     }
     // Update is called once per frame
     void Update()
     {
         ////Animation process for the walk, jump and dash.
-        //if (Input.GetKey(KeyLeft) | Input.GetKey(KeyRight) && !Input.GetKey(DashKey) & GroundCheck())
-        //{
-        //    animator.SetBool("Walk", true);
-        //    animator.SetBool("Jump", false);
-        //}
-        //else if (Input.GetKey(KeyLeft) | Input.GetKey(KeyRight) && Input.GetKey(DashKey) & GroundCheck())
-        //{
-        //    animator.SetBool("Dash", true);
-        //    animator.SetBool("Jump", false);
-        //}
-        //else if (!GroundCheck())
-        //{
-        //    animator.SetBool("Jump", true);
-        //    animator.SetBool("Walk", false);
-        //}
-        //else
-        //{
-        //    animator.SetBool("Walk", false);
-        //    animator.SetBool("Jump", false);
-        //    animator.SetBool("Dash", false);
-        //}
+        if (Input.GetKey(KeyLeft) & GroundCheck() | Input.GetKey(KeyRight) & GroundCheck())
+        {
+            animator.SetBool("Run", true);
+            animator.SetBool("Jump", false);
+        }
+        else if (!GroundCheck())
+        {
+            Debug.Log("Jumping");
+            animator.SetBool("Run", false);
+            animator.SetBool("Jump", true);
+            //animator.SetBool("Jump", true);
+            //animator.SetBool("Walk", false);  
+        }
+        else
+        {
+            animator.SetBool("Run", false);
+            animator.SetBool("Jump", false);
+        }
 
         //Use the keboard to move the character left or right.
         if (Input.GetKey(KeyRight))
@@ -118,6 +123,8 @@ public class MovementKeyboard : MonoBehaviour
         }
         if (b_jump)
         {
+            //Play the jump sound.
+            audioData.Play(0);
             rigidBody.velocity = new Vector2(rigidBody.velocity.x, f_jumpAmount);
             f_jumpTime += Time.deltaTime;
         }
@@ -128,21 +135,21 @@ public class MovementKeyboard : MonoBehaviour
 
         //By pressing the p key, a spell is instantiated (created on the screen during rather than at the start of the game).
         //It checks which way the player is facing to instantiate the spell. 
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            if (m_SpriteRenderer.flipX == false)
-            {
-                Debug.Log(firePoint.position);
-                Instantiate(spell, firePoint.position, transform.rotation);
+        //if (Input.GetKeyDown(KeyCode.P))
+        //{
+        //    if (m_SpriteRenderer.flipX == false)
+        //    {
+        //        Debug.Log(firePoint.position);
+        //        Instantiate(spell, firePoint.position, transform.rotation);
 
-            }
-            else if (m_SpriteRenderer.flipX == true)
-            {
-                Debug.Log(firePoint.position * -1);
-                Instantiate(spell, firePoint.position * -1, transform.rotation);
-            }
+        //    }
+        //    else if (m_SpriteRenderer.flipX == true)
+        //    {
+        //        Debug.Log(firePoint.position * -1);
+        //        Instantiate(spell, firePoint.position * -1, transform.rotation);
+        //    }
 
-        }
+        //}
 
     }
 
