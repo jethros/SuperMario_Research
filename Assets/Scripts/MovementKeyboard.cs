@@ -22,7 +22,7 @@ public class MovementKeyboard : MonoBehaviour
     [SerializeField] private float f_buttonTime = 0.3f;
 
     //Check to see if player is jumping.
-    [SerializeField] private bool b_jump;
+    [SerializeField] private bool b_jump = false;
 
     //Get the reference to the players rigidbody so that we can use physics.
     [SerializeField] private Rigidbody2D rigidBody;
@@ -45,6 +45,7 @@ public class MovementKeyboard : MonoBehaviour
 
     //Audio setup
     [SerializeField] private AudioSource audioData;
+    [SerializeField] private AudioClip audioClip;
 
     void Start()
     {
@@ -123,8 +124,13 @@ public class MovementKeyboard : MonoBehaviour
         }
         if (b_jump)
         {
-            //Play the jump sound.
-            audioData.Play(0);
+            if (!audioData.isPlaying)
+            {
+                Debug.Log("Play sound");
+                //Play the jump sound.
+                audioData.Play();
+            }
+
             rigidBody.velocity = new Vector2(rigidBody.velocity.x, f_jumpAmount);
             f_jumpTime += Time.deltaTime;
         }
